@@ -1,19 +1,35 @@
+import { CardImages } from "./Cards";
+import { createSlot } from "./Slot";
+import { createCard } from "./utils";
 import "./style.css";
-import printMe from "./print";
 
-function component() {
-  const element = document.createElement("div");
-  const btn = document.createElement("button");
+document.body.style.backgroundColor = "#307022";
 
-  // Lodash, now imported by this script
-  element.innerHTML = ["Hello", "webpack"].join(" ");
+const FoundationContainer = document.createElement("div");
+FoundationContainer.style.display = "flex";
+FoundationContainer.style.justifyContent = "flex-start";
+document.body.appendChild(FoundationContainer);
 
-  btn.innerHTML = "Click me and check the console!";
-  btn.onclick = printMe;
-
-  element.appendChild(btn);
-
-  return element;
+const slots: HTMLDivElement[] = [];
+for (let i = 0; i < 6; i++) {
+  const slot = createSlot({ id: `${i}`, parent: FoundationContainer });
+  slots.push(slot);
 }
 
-document.body.appendChild(component());
+createCard({
+  id: "C2",
+  img: CardImages.C2,
+  parent: slots[0],
+});
+
+createCard({
+  id: "C3",
+  img: CardImages.C3,
+  parent: slots[1],
+});
+
+createCard({
+  id: "KH",
+  img: CardImages.HKing,
+  parent: slots[2],
+});

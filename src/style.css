@@ -1,3 +1,15 @@
-.hello {
-  color: red;
+.slot {
+  width: 233px;
+  height: 334px;
+  border: 3px solid #aaaaaa;
+  border-radius: 10px;
+  margin: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.card {
+  width: 223px;
+  height: 324px;
 }
