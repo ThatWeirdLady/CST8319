@@ -13,3 +13,11 @@
   width: 223px;
   height: 324px;
 }
+#topRow {
+  display: flex;
+  justify-content: space-between;
+}
+#deckDiv {
+  display: flex;
+  justify-content: flex-start;
+}
