@@ -64,6 +64,7 @@ const talon = createGenericSlot({
   pile: Pile.TALON,
   parent: deckContainer
 });
+talon.style.backgroundColor = "red";
 
 // Create all foundations slots, debug slots that accept any card for now.
 const foundationPiles = [
