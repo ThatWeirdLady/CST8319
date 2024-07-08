@@ -96,6 +96,8 @@ export function renderSimplePile(div: HTMLDivElement, pileName: Pile) {
   }
 }
 
+5XPathExpression;
+
 // Update the visuals of all piles.
 export function updateVisuals() {
   renderSimplePile(talon, Pile.TALON);
