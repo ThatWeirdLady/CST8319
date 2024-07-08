@@ -2,7 +2,7 @@ export enum Suit {
   HEART,
   SPADE,
   DIAMOND,
-  CLUB,
+  CLUB
 }
 
 export const blackSuits = [Suit.CLUB, Suit.SPADE];

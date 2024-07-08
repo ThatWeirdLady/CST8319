@@ -29,8 +29,8 @@ function newGame(): Game {
       [Pile.TABLEAU_3]: [],
       [Pile.TABLEAU_4]: [],
       [Pile.TABLEAU_5]: [],
-      [Pile.TABLEAU_6]: [],
-    },
+      [Pile.TABLEAU_6]: []
+    }
   };
 }
 
