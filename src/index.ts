@@ -1,4 +1,4 @@
-import { BackImages } from "./CardImages";
+import { BackImages, FrontImages } from "./CardImages";
 import { createDnDSlot, createGenericSlot } from "./Slot";
 import { createCard } from "./CardView";
 import "./style.css";
@@ -54,7 +54,7 @@ deckSlot.onclick = onDeckSlotClick;
 createCard({
   id: "deck-top-card",
   pile: Pile.DECK,
-  img: BackImages.Abstract,
+  img: BackImages.Blue,
   parent: deckSlot,
 });
 
@@ -102,5 +102,51 @@ export function updateVisuals() {
 
   for (let i = 0; i < FoundationSlots.length; i++) {
     renderSimplePile(FoundationSlots[i], foundationPiles[i]);
+  }
+}
+
+const tableauPiles = [
+  Pile.TABLEAU_0,
+  Pile.TABLEAU_1,
+  Pile.TABLEAU_2,
+  Pile.TABLEAU_3,
+  Pile.TABLEAU_4,
+  Pile.TABLEAU_5,
+  Pile.TABLEAU_6,
+];
+
+const cardHeight = 172;
+const cardOffset = 30;
+const tableRow = document.createElement("div");
+tableRow.id = "tableauRow";
+document.body.appendChild(tableRow);
+
+for (let i = 0; i < 7; i++) {
+  const slot = createGenericSlot({
+    id: "tableau0",
+    pile: tableauPiles[i],
+    parent: tableRow,
+  });
+  slot.style.height = `${cardHeight + i * cardOffset}px`;
+  slot.style.alignItems = "start";
+
+  const relDiv = document.createElement("div");
+  slot.appendChild(relDiv);
+
+  relDiv.style.position = "relative";
+  for (let j = 0; j < i + 1; j++) {
+    const possibilities = Object.values(FrontImages);
+    const c0 = createCard({
+      id: `c${j}`,
+      pile: tableauPiles[j],
+      img:
+        j < i
+          ? BackImages.Blue
+          : possibilities[Math.floor(Math.random() * possibilities.length)],
+      parent: relDiv,
+    });
+    c0.style.position = "absolute";
+    c0.style.top = `${j * cardOffset + cardHeight / 2}px`;
+    c0.style.transform = "translate(-50%, -50%)";
   }
 }

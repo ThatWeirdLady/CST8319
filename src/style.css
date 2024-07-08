@@ -1,6 +1,6 @@
 .slot {
-  width: 233px;
-  height: 334px;
+  width: 123px;
+  height: 172px;
   border: 3px solid #aaaaaa;
   border-radius: 10px;
   margin: 5px;
@@ -10,8 +10,8 @@
 }
 
 .card {
-  width: 223px;
-  height: 324px;
+  width: 111px;
+  height: 162px;
 }
 
 #topRowDiv {
@@ -27,4 +27,9 @@
 #foundationDiv {
   display: flex;
   justify-content: flex-start;
+}
+
+#tableauRow {
+  display: flex;
+  justify-content: space-evenly;
 }
