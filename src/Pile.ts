@@ -12,7 +12,7 @@ export enum Pile {
   TABLEAU_3 = "TABLEAU_3",
   TABLEAU_4 = "TABLEAU_4",
   TABLEAU_5 = "TABLEAU_5",
-  TABLEAU_6 = "TABLEAU_6",
+  TABLEAU_6 = "TABLEAU_6"
 }
 
 export function isPile(p: unknown): p is Pile {

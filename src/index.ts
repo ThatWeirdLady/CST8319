@@ -40,7 +40,7 @@ topRow.appendChild(FoundationContainer);
 const deckSlot = createGenericSlot({
   id: "Deck",
   pile: Pile.DECK,
-  parent: deckContainer,
+  parent: deckContainer
 });
 
 function onDeckSlotClick() {
@@ -55,14 +55,14 @@ createCard({
   id: "deck-top-card",
   pile: Pile.DECK,
   img: BackImages.Blue,
-  parent: deckSlot,
+  parent: deckSlot
 });
 
 // create talon slot.
 const talon = createGenericSlot({
   id: "Talon",
   pile: Pile.TALON,
-  parent: deckContainer,
+  parent: deckContainer
 });
 
 // Create all foundations slots, debug slots that accept any card for now.
@@ -70,14 +70,14 @@ const foundationPiles = [
   Pile.FOUNDATION_0,
   Pile.FOUNDATION_1,
   Pile.FOUNDATION_2,
-  Pile.FOUNDATION_3,
+  Pile.FOUNDATION_3
 ];
 const FoundationSlots: HTMLDivElement[] = [];
 for (let i = 0; i < 4; i++) {
   const slot = createDnDSlot({
     id: `${i}`,
     pile: foundationPiles[i],
-    parent: FoundationContainer,
+    parent: FoundationContainer
   });
   FoundationSlots.push(slot);
 }
@@ -91,7 +91,7 @@ export function renderSimplePile(div: HTMLDivElement, pileName: Pile) {
       id: pile[pile.length - 1].id,
       pile: pileName,
       img: pile[pile.length - 1].img,
-      parent: div,
+      parent: div
     });
   }
 }
@@ -112,7 +112,7 @@ const tableauPiles = [
   Pile.TABLEAU_3,
   Pile.TABLEAU_4,
   Pile.TABLEAU_5,
-  Pile.TABLEAU_6,
+  Pile.TABLEAU_6
 ];
 
 const cardHeight = 172;
@@ -125,7 +125,7 @@ for (let i = 0; i < 7; i++) {
   const slot = createGenericSlot({
     id: "tableau0",
     pile: tableauPiles[i],
-    parent: tableRow,
+    parent: tableRow
   });
   slot.style.height = `${cardHeight + i * cardOffset}px`;
   slot.style.alignItems = "start";
@@ -143,7 +143,7 @@ for (let i = 0; i < 7; i++) {
         j < i
           ? BackImages.Blue
           : possibilities[Math.floor(Math.random() * possibilities.length)],
-      parent: relDiv,
+      parent: relDiv
     });
     c0.style.position = "absolute";
     c0.style.top = `${j * cardOffset + cardHeight / 2}px`;

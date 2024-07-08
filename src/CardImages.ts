@@ -119,7 +119,7 @@ export const FrontImages = {
   CQueen,
   DQueen,
   HQueen,
-  SQueen,
+  SQueen
 };
 
 // Create an object with all card back  images for easy access.
@@ -135,5 +135,5 @@ export const BackImages = {
   Fish,
   Frog,
   Red,
-  Red2,
+  Red2
 };
