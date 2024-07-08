@@ -23,7 +23,7 @@ function shuffle<T>(array: T[]) {
 export function freshDeck() {
   const Deck: Card[] = [];
   for (const entry of Object.entries(FrontImages)) {
-    let Card = { id: entry[0], img: entry[1] };
+    const Card = { id: entry[0], img: entry[1] };
     Deck.push(Card);
   }
 

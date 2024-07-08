@@ -22,6 +22,14 @@ function newGame(): Game {
       [Pile.FOUNDATION_1]: [],
       [Pile.FOUNDATION_2]: [],
       [Pile.FOUNDATION_3]: [],
+
+      [Pile.TABLEAU_0]: [],
+      [Pile.TABLEAU_1]: [],
+      [Pile.TABLEAU_2]: [],
+      [Pile.TABLEAU_3]: [],
+      [Pile.TABLEAU_4]: [],
+      [Pile.TABLEAU_5]: [],
+      [Pile.TABLEAU_6]: [],
     },
   };
 }
