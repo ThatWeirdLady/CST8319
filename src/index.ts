@@ -2,7 +2,7 @@ import { BackImages } from "./CardImages";
 import { createDnDSlot, createGenericSlot } from "./Slot";
 import { createCard } from "./CardView";
 import "./style.css";
-import { game, transfer } from "./Game";
+import { game, transfer } from "./Solitaire";
 import { Pile } from "./Pile";
 
 const solitaireGreen = "#307022"; // taken from pictures off the internet
@@ -95,8 +95,6 @@ export function renderSimplePile(div: HTMLDivElement, pileName: Pile) {
     });
   }
 }
-
-5XPathExpression;
 
 // Update the visuals of all piles.
 export function updateVisuals() {

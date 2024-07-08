@@ -1,5 +1,5 @@
 import { updateVisuals } from ".";
-import { game, transfer } from "./Game";
+import { game, transfer } from "./Solitaire";
 import { isPile, Pile } from "./Pile";
 
 // Allows drop on a slot(target) if there is not currently a card there
@@ -21,9 +21,6 @@ function onDrop(dst: Pile) {
       console.error("no dragged_element_id set");
       return;
     }
-
-    // const el = ev.target as HTMLElement;
-    // el.appendChild(document.getElementById(elId));
 
     transfer(src, dst);
     updateVisuals();
