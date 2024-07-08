@@ -5,8 +5,9 @@ export enum Suit {
   CLUB,
 }
 
-const black = [Suit.CLUB, Suit.SPADE];
-const red = [Suit.HEART, Suit.DIAMOND];
+export const blackSuits = [Suit.CLUB, Suit.SPADE];
+export const redSuits = [Suit.HEART, Suit.DIAMOND];
 
+// Check if suits are alternating colors.
 export const isAlternating = (a: Suit, b: Suit) =>
-  red.includes(a) ? black.includes(b) : red.includes(b);
+  redSuits.includes(a) ? blackSuits.includes(b) : redSuits.includes(b);

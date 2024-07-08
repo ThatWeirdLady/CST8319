@@ -1,23 +1,30 @@
-function onDrag(src: string) {
-  return function drag(ev: DragEvent) {
+import { Pile } from "./Pile";
+
+// Create the function that is called when a card starts to get dragged.
+function onDrag(srcPile: Pile) {
+  return function (ev: DragEvent) {
     const element = ev.target as HTMLElement;
-    ev.dataTransfer.setData("dragged_element_id", element.id);
-    ev.dataTransfer.setData("src", src);
+    // Add data to the event so that the slot knows what is being dropped into it.
+    ev.dataTransfer.setData("dragged_element_id", element.id); // Eventually we will not want to pass the ID because the html element should just be destroyed instead.
+    ev.dataTransfer.setData("src", srcPile);
   };
 }
 
 interface CardParams {
   id: string;
-  pile: string;
+  pile: Pile;
   img: string;
   parent?: HTMLElement;
 }
 
+// Create a card that can be used as the start of a dragging event to move a card between 2 piles.
 export function createCard(params: CardParams) {
   const img = document.createElement("img");
   img.classList.add("card");
   img.src = params.img;
   img.id = params.id;
+
+  // Add events
   img.draggable = true;
   img.ondragstart = onDrag(params.pile);
   if (params.parent) {

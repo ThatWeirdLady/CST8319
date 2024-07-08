@@ -1,4 +1,4 @@
-// front
+// Import all front images.
 import C10 from "./cards/front/clubs_10.svg";
 import C2 from "./cards/front/clubs_2.svg";
 import C3 from "./cards/front/clubs_3.svg";
@@ -52,7 +52,7 @@ import SJack from "./cards/front/spades_jack.svg";
 import SKing from "./cards/front/spades_king.svg";
 import SQueen from "./cards/front/spades_queen.svg";
 
-// back
+// Import all back images.
 import Abstract from "./cards/backs/abstract.svg";
 import AbstractClouds from "./cards/backs/abstract_clouds.svg";
 import AbstractScene from "./cards/backs/abstract_scene.svg";
@@ -66,6 +66,7 @@ import Frog from "./cards/backs/frog.svg";
 import Red from "./cards/backs/red.svg";
 import Red2 from "./cards/backs/red2.svg";
 
+// Create an object with all card front images for easy access.
 export const FrontImages = {
   C10,
   D10,
@@ -121,6 +122,7 @@ export const FrontImages = {
   SQueen,
 };
 
+// Create an object with all card back  images for easy access.
 export const BackImages = {
   Abstract,
   AbstractClouds,
