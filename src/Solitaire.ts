@@ -1,7 +1,7 @@
 import { shuffle } from "./Utils";
 import { Pile } from "./Pile";
 import { Rank } from "./Rank";
-import { Suit } from "./Suit";
+import { Suit } from "./CardSuit";
 import { BackImages } from "./CardImages";
 
 export const game = newGame();
