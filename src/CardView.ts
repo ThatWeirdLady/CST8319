@@ -1,19 +1,20 @@
+import { DefaultBackImage } from ".";
 import { Pile } from "./Pile";
 
 // Create the function that is called when a card starts to get dragged.
-function onDrag(srcPile: Pile) {
+function onDrag(srcPile: Pile, amountOfCards: number) {
   return function (ev: DragEvent) {
-    const element = ev.target as HTMLElement;
     // Add data to the event so that the slot knows what is being dropped into it.
-    ev.dataTransfer.setData("dragged_element_id", element.id); // Eventually we will not want to pass the ID because the html element should just be destroyed instead.
     ev.dataTransfer.setData("src", srcPile);
+    ev.dataTransfer.setData("amt", String(amountOfCards));
   };
 }
 
 interface CardParams {
-  id: string;
   pile: Pile;
+  depth: number;
   img: string;
+  faceUp: boolean;
   parent?: HTMLElement;
 }
 
@@ -21,12 +22,12 @@ interface CardParams {
 export function createCard(params: CardParams) {
   const img = document.createElement("img");
   img.classList.add("card");
-  img.src = params.img;
-  img.id = params.id;
+  if (params.faceUp == false) img.src = DefaultBackImage;
+  if (params.faceUp) img.src = params.img;
 
   // Add events
   img.draggable = true;
-  img.ondragstart = onDrag(params.pile);
+  img.ondragstart = onDrag(params.pile, params.depth);
   if (params.parent) {
     params.parent.appendChild(img);
   }

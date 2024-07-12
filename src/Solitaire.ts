@@ -35,7 +35,12 @@ function newGame(): Game {
 }
 
 // Transfer a card between 2 piles.
-export function transfer(src: Pile, dst: Pile) {
+export function transfer(src: Pile, dst: Pile, revealed?: boolean) {
   const card = game.piles[src].pop();
+  // Whomever is calling transfer can specify revealed status
+  if (revealed !== undefined) {
+    card.revealed = revealed;
+  }
+
   game.piles[dst].push(card);
 }

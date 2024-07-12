@@ -1,8 +1,8 @@
 export enum Suit {
-  HEART,
-  SPADE,
-  DIAMOND,
-  CLUB
+  HEART = "HEART",
+  SPADE = "SPADE",
+  DIAMOND = "DIAMOND",
+  CLUB = "CLUB"
 }
 
 export const blackSuits = [Suit.CLUB, Suit.SPADE];
