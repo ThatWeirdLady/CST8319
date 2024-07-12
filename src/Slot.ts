@@ -1,12 +1,20 @@
 import { updateVisuals } from ".";
 import { game, transfer } from "./Solitaire";
 import { isPile, Pile } from "./Pile";
+import { Card } from "./Deck";
+
+export type AllowedConditionFunction = (pile: Card[], add: Card[]) => boolean;
 
 // Allows drop on a slot(target) if there is not currently a card there
 // will have to create different rules for each pile.
-function checkAllowedDrop(dst: Pile) {
+function checkAllowedDrop(dst: Pile, allowDrop: AllowedConditionFunction) {
   return function (ev: DragEvent) {
-    if (game.piles[dst].length === 0) ev.preventDefault(); // if the destination pile has no card allow the drop.
+    const srcPileName = ev.dataTransfer.getData("src") as Pile;
+    const srcAmt = parseInt(ev.dataTransfer.getData("amt"));
+    const srcPileArray = game.piles[srcPileName];
+    const add = srcPileArray.slice(-srcAmt);
+
+    if (allowDrop(game.piles[dst], add)) ev.preventDefault();
   };
 }
 
@@ -14,13 +22,8 @@ function checkAllowedDrop(dst: Pile) {
 function onDrop(dst: Pile) {
   return function (ev: DragEvent) {
     ev.preventDefault();
-    const elId = ev.dataTransfer.getData("dragged_element_id");
     const src = ev.dataTransfer.getData("src") as Pile;
     if (!isPile(src)) return;
-    if (!elId) {
-      console.error("no dragged_element_id set");
-      return;
-    }
 
     transfer(src, dst);
     updateVisuals();
@@ -30,6 +33,7 @@ function onDrop(dst: Pile) {
 interface SlotParams {
   id: string;
   pile: Pile;
+  allowDrop: AllowedConditionFunction;
   parent?: HTMLElement;
 }
 
@@ -39,7 +43,7 @@ export function createDnDSlot(params: SlotParams) {
 
   // add drag events
   slot.ondrop = onDrop(params.pile);
-  slot.ondragover = checkAllowedDrop(params.pile);
+  slot.ondragover = checkAllowedDrop(params.pile, params.allowDrop);
   return slot;
 }
 

@@ -4,6 +4,8 @@ import { createCard } from "./CardView";
 import "./style.css";
 import { game, transfer } from "./Solitaire";
 import { Pile } from "./Pile";
+import { Card } from "./Deck";
+import { Rank } from "./ranks";
 
 export const DefaultBackImage = BackImages.Blue;
 
@@ -42,7 +44,8 @@ topRow.appendChild(FoundationContainer);
 const deckSlot = createGenericSlot({
   id: "Deck",
   pile: Pile.DECK,
-  parent: deckContainer
+  parent: deckContainer,
+  allowDrop: noDrop
 });
 
 function onDeckSlotClick() {
@@ -54,19 +57,40 @@ deckSlot.onclick = onDeckSlotClick;
 
 // Create the visuals for the top of the deck. Simply the back of a card.
 createCard({
-  id: "deck-top-card",
   pile: Pile.DECK,
   img: DefaultBackImage,
   faceUp: false,
-  parent: deckSlot
+  parent: deckSlot,
+  depth: 1
 });
 
 // create talon slot.
 const talon = createGenericSlot({
   id: "Talon",
   pile: Pile.TALON,
-  parent: deckContainer
+  parent: deckContainer,
+  allowDrop: noDrop
 });
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function noDrop(_: Card[], __: Card[]): boolean {
+  return false;
+}
+
+function isAllowedOnFoundation(pile: Card[], add: Card[]): boolean {
+  if (add.length !== 1) {
+    return false;
+  }
+  const card = add[0];
+  if (pile.length === 0) {
+    return card.rank === Rank.Ace;
+  }
+  const topCard = pile[pile.length - 1];
+  if (card.suit === topCard.suit && card.rank === topCard.rank + 1) {
+    return true;
+  }
+  return false;
+}
 
 // Create all foundations slots, debug slots that accept any card for now.
 const foundationPiles = [
@@ -80,7 +104,8 @@ for (let i = 0; i < 4; i++) {
   const slot = createDnDSlot({
     id: `${i}`,
     pile: foundationPiles[i],
-    parent: FoundationContainer
+    parent: FoundationContainer,
+    allowDrop: isAllowedOnFoundation
   });
   FoundationSlots.push(slot);
 }
@@ -92,11 +117,11 @@ export function renderSimplePile(div: HTMLDivElement, pileName: Pile) {
   const topCard = pile[pile.length - 1];
   if (pile.length) {
     createCard({
-      id: topCard.suit + topCard.rank,
       pile: pileName,
       faceUp: topCard.revealed,
       img: FrontImages[topCard.suit + topCard.rank],
-      parent: div
+      parent: div,
+      depth: 1
     });
   }
 }
@@ -130,26 +155,24 @@ for (let i = 0; i < 7; i++) {
   const slot = createGenericSlot({
     id: "tableau0",
     pile: tableauPiles[i],
-    parent: tableRow
+    parent: tableRow,
+    allowDrop: noDrop //For now
   });
   slot.style.height = `${cardHeight + i * cardOffset}px`;
   slot.style.alignItems = "start";
 
-  const relDiv = document.createElement("div");
-  slot.appendChild(relDiv);
+  const anchorDiv = document.createElement("div");
+  slot.appendChild(anchorDiv);
 
-  relDiv.style.position = "relative";
+  anchorDiv.style.position = "relative";
   for (let j = 0; j < i + 1; j++) {
     const possibilities = Object.values(FrontImages);
     const c0 = createCard({
-      id: `c${j}`,
-      pile: tableauPiles[j],
-      img:
-        j < i
-          ? BackImages.Blue
-          : possibilities[Math.floor(Math.random() * possibilities.length)],
-      faceUp: false,
-      parent: relDiv
+      pile: tableauPiles[i],
+      img: possibilities[Math.floor(Math.random() * possibilities.length)],
+      faceUp: i - 1 < j,
+      parent: anchorDiv,
+      depth: 1
     });
     c0.style.position = "absolute";
     c0.style.top = `${j * cardOffset + cardHeight / 2}px`;
