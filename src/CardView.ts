@@ -1,3 +1,4 @@
+import { DefaultBackImage } from ".";
 import { Pile } from "./Pile";
 
 // Create the function that is called when a card starts to get dragged.
@@ -14,6 +15,7 @@ interface CardParams {
   id: string;
   pile: Pile;
   img: string;
+  faceUp: boolean;
   parent?: HTMLElement;
 }
 
@@ -21,7 +23,8 @@ interface CardParams {
 export function createCard(params: CardParams) {
   const img = document.createElement("img");
   img.classList.add("card");
-  img.src = params.img;
+  if (params.faceUp == false) img.src = DefaultBackImage;
+  if (params.faceUp) img.src = params.img;
   img.id = params.id;
 
   // Add events

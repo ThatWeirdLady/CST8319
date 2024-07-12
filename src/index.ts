@@ -5,6 +5,8 @@ import "./style.css";
 import { game, transfer } from "./Solitaire";
 import { Pile } from "./Pile";
 
+export const DefaultBackImage = BackImages.Blue;
+
 const solitaireGreen = "#307022"; // taken from pictures off the internet
 document.body.style.backgroundColor = solitaireGreen;
 
@@ -44,7 +46,7 @@ const deckSlot = createGenericSlot({
 });
 
 function onDeckSlotClick() {
-  transfer(Pile.DECK, Pile.TALON);
+  transfer(Pile.DECK, Pile.TALON, true);
   updateVisuals();
 }
 
@@ -54,7 +56,8 @@ deckSlot.onclick = onDeckSlotClick;
 createCard({
   id: "deck-top-card",
   pile: Pile.DECK,
-  img: BackImages.Blue,
+  img: DefaultBackImage,
+  faceUp: false,
   parent: deckSlot
 });
 
@@ -86,11 +89,13 @@ for (let i = 0; i < 4; i++) {
 export function renderSimplePile(div: HTMLDivElement, pileName: Pile) {
   div.innerHTML = "";
   const pile = game.piles[pileName];
+  const topCard = pile[pile.length - 1];
   if (pile.length) {
     createCard({
-      id: pile[pile.length - 1].id,
+      id: topCard.suit + topCard.rank,
       pile: pileName,
-      img: pile[pile.length - 1].img,
+      faceUp: topCard.revealed,
+      img: FrontImages[topCard.suit + topCard.rank],
       parent: div
     });
   }
@@ -143,6 +148,7 @@ for (let i = 0; i < 7; i++) {
         j < i
           ? BackImages.Blue
           : possibilities[Math.floor(Math.random() * possibilities.length)],
+      faceUp: false,
       parent: relDiv
     });
     c0.style.position = "absolute";
