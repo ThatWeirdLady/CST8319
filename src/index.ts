@@ -49,7 +49,15 @@ const deckSlot = createGenericSlot({
 });
 
 function onDeckSlotClick() {
-  transfer(Pile.DECK, Pile.TALON, true);
+  if (game.piles[Pile.DECK].length !== 0) {
+    transfer(Pile.DECK, Pile.TALON, true);
+  } else {
+    const talon = game.piles[Pile.TALON];
+    game.piles[Pile.TALON] = game.piles[Pile.DECK];
+    game.piles[Pile.DECK] = talon.reverse();
+    // Equivalent  of a for loop
+    game.piles[Pile.DECK].forEach((card) => (card.revealed = false));
+  }
   updateVisuals();
 }
 
@@ -128,6 +136,7 @@ export function renderSimplePile(div: HTMLDivElement, pileName: Pile) {
 
 // Update the visuals of all piles.
 export function updateVisuals() {
+  renderSimplePile(deckSlot, Pile.DECK);
   renderSimplePile(talon, Pile.TALON);
 
   for (let i = 0; i < FoundationSlots.length; i++) {
