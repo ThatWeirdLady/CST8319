@@ -1,5 +1,5 @@
-import { DefaultBackImage } from ".";
 import { Pile } from "./Pile";
+import { game } from "./Solitaire";
 
 // Create the function that is called when a card starts to get dragged.
 function onDrag(srcPile: Pile, amountOfCards: number) {
@@ -14,7 +14,7 @@ interface CardParams {
   pile: Pile;
   depth: number;
   img: string;
-  faceUp: boolean;
+  revealed: boolean;
   parent?: HTMLElement;
 }
 
@@ -22,8 +22,8 @@ interface CardParams {
 export function createCard(params: CardParams) {
   const img = document.createElement("img");
   img.classList.add("card");
-  if (params.faceUp == false) img.src = DefaultBackImage;
-  if (params.faceUp) img.src = params.img;
+  if (!params.revealed) img.src = game.backImage;
+  else img.src = params.img;
 
   // Add events
   img.draggable = true;

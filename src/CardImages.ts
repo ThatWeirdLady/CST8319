@@ -65,9 +65,10 @@ import Fish from "./cards/backs/fish.svg";
 import Frog from "./cards/backs/frog.svg";
 import Red from "./cards/backs/red.svg";
 import Red2 from "./cards/backs/red2.svg";
+import { Card } from "./Solitaire";
 
 // Create an object with all card front images for easy access.
-export const FrontImages: Record<string, string> = {
+const FrontImages: Record<string, string> = {
   CLUB10,
   DIAMOND10,
   HEART10,
@@ -137,3 +138,7 @@ export const BackImages: Record<string, string> = {
   Red,
   Red2
 };
+
+export function getImage(card: Card) {
+  return FrontImages[card.suit + card.rank];
+}
