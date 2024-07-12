@@ -1,15 +1,18 @@
-import { Card, freshDeck } from "./Deck";
+import { shuffle } from "./Utils";
 import { Pile } from "./Pile";
+import { Rank } from "./Rank";
+import { Suit } from "./Suit";
+import { BackImages } from "./CardImages";
 
-// Defining a game so each spot has a location.
 export const game = newGame();
 
-console.log(game);
 interface Game {
+  backImage: string;
   piles: Record<Pile, Card[]>;
   updateVisuals: Record<Pile, () => void>;
 }
 
+// reveal the last card of a pile and return the pile, used for Tableau initialization.
 function revealLast(pile: Card[]): Card[] {
   pile[pile.length - 1].revealed = true;
   return pile;
@@ -18,6 +21,7 @@ function revealLast(pile: Card[]): Card[] {
 function newGame(): Game {
   const deck = freshDeck();
   return {
+    backImage: BackImages.Blue,
     piles: {
       // Contains all unused cards.
       [Pile.DECK]: deck,
@@ -79,8 +83,35 @@ export function transfer(src: Pile, dst: Pile, revealed?: boolean) {
 }
 
 export function fullRender() {
-  console.log(game);
   for (const update of Object.values(game.updateVisuals)) {
     update();
   }
+}
+
+export interface Card {
+  rank: number;
+  suit: Suit;
+  revealed: boolean;
+}
+
+// Create a brand new, shuffled deck of 52 cards.
+function freshDeck() {
+  const Deck: Card[] = [];
+
+  const ranksArray = Object.values(Rank);
+  const suitsArray = Object.values(Suit);
+  for (const rank of ranksArray) {
+    for (const suit of suitsArray) {
+      const Card = {
+        rank: rank,
+        suit: suit,
+        revealed: false
+      };
+      Deck.push(Card);
+    }
+  }
+
+  shuffle(Deck);
+
+  return Deck;
 }

@@ -15,6 +15,24 @@ export enum Pile {
   TABLEAU_6 = "TABLEAU_6"
 }
 
+export const FoundationPiles = [
+  Pile.FOUNDATION_0,
+  Pile.FOUNDATION_1,
+  Pile.FOUNDATION_2,
+  Pile.FOUNDATION_3
+];
+
+export const TableauPiles = [
+  Pile.TABLEAU_0,
+  Pile.TABLEAU_1,
+  Pile.TABLEAU_2,
+  Pile.TABLEAU_3,
+  Pile.TABLEAU_4,
+  Pile.TABLEAU_5,
+  Pile.TABLEAU_6
+];
+
+// Checks if variable is a valid Pile
 export function isPile(p: unknown): p is Pile {
   return Object.values(Pile).some((v) => v === p);
 }

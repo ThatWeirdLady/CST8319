@@ -1,6 +1,6 @@
-import { noDrop, renderSimplePile } from ".";
+import { renderSimplePile } from "./Utils";
 import { Pile } from "./Pile";
-import { createGenericSlot } from "./Slot";
+import { createGenericSlot } from "./BaseSlot";
 import { fullRender, game, transfer } from "./Solitaire";
 
 function onDeckSlotClick() {
@@ -21,16 +21,13 @@ function onDeckSlotClick() {
   }
 }
 
-export function CreateDeckVisual(container: HTMLDivElement) {
+export function CreateDeckSlot() {
   //Creates DeckSlot inside container given
-  const slot = createGenericSlot({
-    id: "Deck",
-    pile: Pile.DECK,
-    parent: container,
-    allowDrop: noDrop
-  });
+  const slot = createGenericSlot();
   // set up deck onClick event
   slot.onclick = onDeckSlotClick;
   // assigns/registers function to call when something changes in the Deck
   game.updateVisuals[Pile.DECK] = () => renderSimplePile(slot, Pile.DECK);
+
+  return slot;
 }
