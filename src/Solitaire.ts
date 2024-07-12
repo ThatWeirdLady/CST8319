@@ -12,7 +12,7 @@ function newGame(): Game {
   return {
     piles: {
       // Contains all unused cards.
-      [Pile.DECK]: freshDeck().slice(0, 3),
+      [Pile.DECK]: freshDeck(),
 
       // Also known as the "waste" pile. Cards go here after being flipped from the deck pile.
       [Pile.TALON]: [],
