@@ -2,10 +2,11 @@ import { BackImages, FrontImages } from "./CardImages";
 import { createDnDSlot, createGenericSlot } from "./Slot";
 import { createCard } from "./CardView";
 import "./style.css";
-import { game, transfer } from "./Solitaire";
+import { fullRender, game } from "./Solitaire";
 import { Pile } from "./Pile";
 import { Card } from "./Deck";
 import { Rank } from "./ranks";
+import { CreateDeckVisual } from "./DeckVisual";
 
 export const DefaultBackImage = BackImages.Blue;
 
@@ -28,8 +29,10 @@ const topRow = document.createElement("div");
 topRow.id = "topRowDiv";
 
 // Holds deck and talon.
-const deckContainer = document.createElement("div");
-deckContainer.id = "deckDiv";
+const deckAndTalonDiv = document.createElement("div");
+deckAndTalonDiv.id = "deckDiv";
+
+topRow.appendChild(deckAndTalonDiv);
 
 // Holds four foundation slots.
 const FoundationContainer = document.createElement("div");
@@ -37,51 +40,20 @@ FoundationContainer.id = "foundationDiv";
 
 // Setup hierarchy.
 document.body.appendChild(topRow);
-topRow.appendChild(deckContainer);
 topRow.appendChild(FoundationContainer);
 
-// Create the deck slot and what happens when you click on it.
-const deckSlot = createGenericSlot({
-  id: "Deck",
-  pile: Pile.DECK,
-  parent: deckContainer,
-  allowDrop: noDrop
-});
-
-function onDeckSlotClick() {
-  if (game.piles[Pile.DECK].length !== 0) {
-    transfer(Pile.DECK, Pile.TALON, true);
-  } else {
-    const talon = game.piles[Pile.TALON];
-    game.piles[Pile.TALON] = game.piles[Pile.DECK];
-    game.piles[Pile.DECK] = talon.reverse();
-    // Equivalent  of a for loop
-    game.piles[Pile.DECK].forEach((card) => (card.revealed = false));
-  }
-  updateVisuals();
-}
-
-deckSlot.onclick = onDeckSlotClick;
-
-// Create the visuals for the top of the deck. Simply the back of a card.
-createCard({
-  pile: Pile.DECK,
-  img: DefaultBackImage,
-  faceUp: false,
-  parent: deckSlot,
-  depth: 1
-});
+CreateDeckVisual(deckAndTalonDiv);
 
 // create talon slot.
 const talon = createGenericSlot({
   id: "Talon",
   pile: Pile.TALON,
-  parent: deckContainer,
+  parent: deckAndTalonDiv,
   allowDrop: noDrop
 });
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-function noDrop(_: Card[], __: Card[]): boolean {
+export function noDrop(_: Card[], __: Card[]): boolean {
   return false;
 }
 
@@ -134,14 +106,11 @@ export function renderSimplePile(div: HTMLDivElement, pileName: Pile) {
   }
 }
 
-// Update the visuals of all piles.
-export function updateVisuals() {
-  renderSimplePile(deckSlot, Pile.DECK);
-  renderSimplePile(talon, Pile.TALON);
+game.updateVisuals[Pile.TALON] = () => renderSimplePile(talon, Pile.TALON);
 
-  for (let i = 0; i < FoundationSlots.length; i++) {
+for (let i = 0; i < FoundationSlots.length; i++) {
+  game.updateVisuals[foundationPiles[i]] = () =>
     renderSimplePile(FoundationSlots[i], foundationPiles[i]);
-  }
 }
 
 const tableauPiles = [
@@ -160,6 +129,31 @@ const tableRow = document.createElement("div");
 tableRow.id = "tableauRow";
 document.body.appendChild(tableRow);
 
+function renderTableau(
+  pileName: Pile,
+  slot: HTMLDivElement,
+  anchorDiv: HTMLDivElement
+) {
+  const pile = game.piles[pileName];
+  anchorDiv.innerHTML = "";
+  slot.style.height = `${cardHeight + (pile.length - 1) * cardOffset}px`;
+  for (let i = 0; i < pile.length; i++) {
+    const c0 = createCard({
+      pile: pileName,
+      img: FrontImages[pile[i].suit + pile[i].rank],
+      faceUp: pile[i].revealed,
+      parent: anchorDiv,
+      depth: pile.length - i
+    });
+    c0.style.position = "absolute";
+    c0.style.top = `${i * cardOffset + cardHeight / 2}px`;
+    c0.style.transform = "translate(-50%, -50%)";
+  }
+}
+
+const tableauDivs: HTMLDivElement[] = [];
+const anchorDivs: HTMLDivElement[] = [];
+
 for (let i = 0; i < 7; i++) {
   const slot = createGenericSlot({
     id: "tableau0",
@@ -167,24 +161,20 @@ for (let i = 0; i < 7; i++) {
     parent: tableRow,
     allowDrop: noDrop //For now
   });
-  slot.style.height = `${cardHeight + i * cardOffset}px`;
+  slot.style.height = `${cardHeight + i * cardOffset}px`; // done
   slot.style.alignItems = "start";
+  tableauDivs.push(slot);
 
   const anchorDiv = document.createElement("div");
   slot.appendChild(anchorDiv);
+  anchorDivs.push(anchorDiv);
 
   anchorDiv.style.position = "relative";
-  for (let j = 0; j < i + 1; j++) {
-    const possibilities = Object.values(FrontImages);
-    const c0 = createCard({
-      pile: tableauPiles[i],
-      img: possibilities[Math.floor(Math.random() * possibilities.length)],
-      faceUp: i - 1 < j,
-      parent: anchorDiv,
-      depth: 1
-    });
-    c0.style.position = "absolute";
-    c0.style.top = `${j * cardOffset + cardHeight / 2}px`;
-    c0.style.transform = "translate(-50%, -50%)";
-  }
 }
+
+for (let i = 0; i < 7; i++) {
+  game.updateVisuals[tableauPiles[i]] = () =>
+    renderTableau(tableauPiles[i], tableauDivs[i], anchorDivs[i]);
+}
+
+fullRender();

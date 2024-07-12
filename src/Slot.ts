@@ -1,4 +1,3 @@
-import { updateVisuals } from ".";
 import { game, transfer } from "./Solitaire";
 import { isPile, Pile } from "./Pile";
 import { Card } from "./Deck";
@@ -26,7 +25,6 @@ function onDrop(dst: Pile) {
     if (!isPile(src)) return;
 
     transfer(src, dst);
-    updateVisuals();
   };
 }
 
