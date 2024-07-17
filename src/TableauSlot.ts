@@ -14,7 +14,7 @@ function renderTableau(
 ) {
   const pile = game.piles[pileName];
   anchorDiv.innerHTML = "";
-  slot.style.height = `${cardHeight + (pile.length - 1) * cardOffset}px`;
+  slot.style.height = `${cardHeight + Math.max(0, pile.length - 1) * cardOffset}px`;
   for (let i = 0; i < pile.length; i++) {
     const c0 = createCard({
       pile: pileName,

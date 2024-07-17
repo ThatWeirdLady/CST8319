@@ -3,11 +3,17 @@ import { game } from "./Solitaire";
 
 // Create the function that is called when a card starts to get dragged.
 function onDrag(srcPile: Pile, amountOfCards: number) {
-  return function (ev: DragEvent) {
+  return function () {
     // Add data to the event so that the slot knows what is being dropped into it.
-    ev.dataTransfer.setData("src", srcPile);
-    ev.dataTransfer.setData("amt", String(amountOfCards));
+    game.currentDrag = {
+      src: srcPile,
+      amt: amountOfCards
+    };
   };
+}
+
+function onDragEnd() {
+  game.currentDrag = undefined;
 }
 
 interface CardParams {
@@ -28,6 +34,7 @@ export function createCard(params: CardParams) {
   // Add events
   img.draggable = true;
   img.ondragstart = onDrag(params.pile, params.depth);
+  img.ondragend = onDragEnd;
   if (params.parent) {
     params.parent.appendChild(img);
   }
