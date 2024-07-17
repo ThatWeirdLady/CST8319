@@ -6,10 +6,16 @@ import { BackImages } from "./CardImages";
 
 export const game = newGame();
 
+interface DragData {
+  src: Pile;
+  amt: number;
+}
+
 interface Game {
   backImage: string;
   piles: Record<Pile, Card[]>;
   updateVisuals: Record<Pile, () => void>;
+  currentDrag?: DragData;
 }
 
 // reveal the last card of a pile and return the pile, used for Tableau initialization.
@@ -17,6 +23,9 @@ function revealLast(pile: Card[]): Card[] {
   pile[pile.length - 1].revealed = true;
   return pile;
 }
+
+// declare this so we can use it as default use case for updateVisuals
+function doNothing() {}
 
 function newGame(): Game {
   const deck = freshDeck();
@@ -46,24 +55,24 @@ function newGame(): Game {
 
     updateVisuals: {
       // Contains all unused cards.
-      [Pile.DECK]: () => undefined,
+      [Pile.DECK]: doNothing,
 
       // Also known as the "waste" pile. Cards go here after being flipped from the deck pile.
-      [Pile.TALON]: () => undefined,
+      [Pile.TALON]: doNothing,
 
       // The 4 piles where the Aces go first.
-      [Pile.FOUNDATION_0]: () => undefined,
-      [Pile.FOUNDATION_1]: () => undefined,
-      [Pile.FOUNDATION_2]: () => undefined,
-      [Pile.FOUNDATION_3]: () => undefined,
+      [Pile.FOUNDATION_0]: doNothing,
+      [Pile.FOUNDATION_1]: doNothing,
+      [Pile.FOUNDATION_2]: doNothing,
+      [Pile.FOUNDATION_3]: doNothing,
 
-      [Pile.TABLEAU_0]: () => undefined,
-      [Pile.TABLEAU_1]: () => undefined,
-      [Pile.TABLEAU_2]: () => undefined,
-      [Pile.TABLEAU_3]: () => undefined,
-      [Pile.TABLEAU_4]: () => undefined,
-      [Pile.TABLEAU_5]: () => undefined,
-      [Pile.TABLEAU_6]: () => undefined
+      [Pile.TABLEAU_0]: doNothing,
+      [Pile.TABLEAU_1]: doNothing,
+      [Pile.TABLEAU_2]: doNothing,
+      [Pile.TABLEAU_3]: doNothing,
+      [Pile.TABLEAU_4]: doNothing,
+      [Pile.TABLEAU_5]: doNothing,
+      [Pile.TABLEAU_6]: doNothing
     }
   };
 }
@@ -83,7 +92,9 @@ export function transfer(src: Pile, dst: Pile, revealed?: boolean) {
 }
 
 export function fullRender() {
-  for (const update of Object.values(game.updateVisuals)) {
+  // Get an array of all update functions.
+  const updates = Object.values(game.updateVisuals);
+  for (const update of updates) {
     update();
   }
 }

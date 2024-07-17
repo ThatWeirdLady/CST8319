@@ -8,12 +8,11 @@ function CreateOnDragOver(dst: Pile, allowDrop: AllowedConditionFunction) {
   /* When CreateOnDragOver is called it creates a function onDragOver that keeps reference of dst and allowDrop.
  Every time CreateOnDragOver is called, dst is different, allowDrop can be different and allowDrop is given different arguments depending on the destination and the cards to add */
   function onDragOver(ev: DragEvent) {
-    const srcPileName = ev.dataTransfer.getData("src");
-    if (!isPile(srcPileName)) return;
-    const srcAmt = parseInt(ev.dataTransfer.getData("amt"));
-    const srcPileArray = game.piles[srcPileName];
-    const add = srcPileArray.slice(-srcAmt);
-
+    if (!game.currentDrag) return;
+    const src = game.currentDrag.src;
+    const amt = game.currentDrag.amt;
+    const srcPileArray = game.piles[src];
+    const add = srcPileArray.slice(-amt);
     if (allowDrop(game.piles[dst], add)) ev.preventDefault();
   }
 
@@ -25,7 +24,8 @@ function CreateOnDropForDst(dst: Pile) {
   // This allows dst to be dynamic. It is a new onDrop and new dst every time CreateOnDropForDst is called.
   function onDrop(ev: DragEvent) {
     ev.preventDefault();
-    const src = ev.dataTransfer.getData("src");
+    const src = game.currentDrag.src;
+    // const amt = game.currentDrag.amt;
     if (!isPile(src)) return;
 
     transfer(src, dst);
