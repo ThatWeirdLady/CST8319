@@ -62,8 +62,6 @@
 
 | 3 |Add an optional onClick parameters to CardView which determines what happens when the card is clicked.
 
-| 1 |Refactor onDrag to include a json payload that contains all necessary information instead of separate fields.
-
 | 1 |transfer should accept a number of card and move that many cards.
 
 | 1 |Tableau should only allow drag of revealed cards.
