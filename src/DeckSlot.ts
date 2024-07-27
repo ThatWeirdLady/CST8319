@@ -7,7 +7,7 @@ function onDeckSlotClick() {
   // if there are cards in the deck..
   if (game.piles[Pile.DECK].length !== 0) {
     // transfer from the deck to the talon, reveal the card
-    transfer(Pile.DECK, Pile.TALON, true);
+    transfer(Pile.DECK, Pile.TALON, 1, true);
   } else {
     // if no cards in deck, refill the deck
     const talon = game.piles[Pile.TALON];

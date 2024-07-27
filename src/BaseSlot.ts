@@ -25,10 +25,10 @@ function CreateOnDropForDst(dst: Pile) {
   function onDrop(ev: DragEvent) {
     ev.preventDefault();
     const src = game.currentDrag.src;
-    // const amt = game.currentDrag.amt;
+    const amt = game.currentDrag.amt;
     if (!isPile(src)) return;
 
-    transfer(src, dst);
+    transfer(src, dst, amt);
   }
 
   return onDrop;
