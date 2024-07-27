@@ -1,8 +1,10 @@
 import { getImage } from "./CardImages";
 import { createCard } from "./CardView";
 import { Pile } from "./Pile";
-import { createGenericSlot } from "./BaseSlot";
-import { game } from "./Solitaire";
+import { createDnDSlot } from "./BaseSlot";
+import { Card, game } from "./Solitaire";
+import { Rank } from "./Rank";
+import { isAlternating } from "./CardSuit";
 
 const cardHeight = 172;
 const cardOffset = 30;
@@ -29,12 +31,40 @@ function renderTableau(
   }
 }
 
+function isAllowedOnTableau(pile: Card[], add: Card[]): boolean {
+  const firstCard = add[0];
+
+  if (pile.length === 0) {
+    return firstCard.rank === Rank.King;
+  }
+  const topCard = pile[pile.length - 1];
+  if (pile.length !== 0) {
+    return (
+      firstCard.rank === topCard.rank - 1 &&
+      isAlternating(firstCard.suit, topCard.suit)
+    );
+  }
+  return false;
+}
+
+function onClickTableau(pileName: Pile) {
+  const pile = game.piles[pileName];
+  if (pile.length !== 0) {
+    const lastCard = pile[pile.length - 1];
+    lastCard.revealed = true;
+    game.updateVisuals[pileName]();
+  }
+}
+
 export function CreateTableauSlot(pile: Pile) {
-  const slot = createGenericSlot();
+  const slot = createDnDSlot({ pile: pile, allowDrop: isAllowedOnTableau });
+
   slot.style.alignItems = "start";
   const anchorDiv = document.createElement("div");
   slot.appendChild(anchorDiv);
   anchorDiv.style.position = "relative";
+
+  slot.onclick = () => onClickTableau(pile);
 
   game.updateVisuals[pile] = () => renderTableau(pile, slot, anchorDiv);
 
