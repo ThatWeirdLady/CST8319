@@ -1,4 +1,8 @@
 import "./style.css";
-import { CreateLayout } from "./LayoutVisuals";
+import { CreatePageLayout, solitaireGreen } from "./LayoutVisuals";
+import { fullRender } from "./Solitaire";
 
-CreateLayout(document.body);
+document.body.appendChild(CreatePageLayout());
+document.body.style.backgroundColor = solitaireGreen;
+
+fullRender();

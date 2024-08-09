@@ -27,9 +27,9 @@ function revealLast(pile: Card[]): Card[] {
 // declare this so we can use it as default use case for updateVisuals
 function doNothing() {}
 
-function newGame(): Game {
+export function newGame(): Game {
   const deck = freshDeck();
-  return {
+  const out: Game = {
     backImage: BackImages.Blue,
     piles: {
       // Contains all unused cards.
@@ -75,6 +75,8 @@ function newGame(): Game {
       [Pile.TABLEAU_6]: doNothing
     }
   };
+
+  return out;
 }
 
 // Transfer a card between 2 piles.

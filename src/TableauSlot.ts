@@ -5,6 +5,7 @@ import { createDnDSlot } from "./BaseSlot";
 import { Card, game } from "./Solitaire";
 import { Rank } from "./Rank";
 import { isAlternating } from "./CardSuit";
+import { onClickCard } from "./autoClick";
 
 const cardHeight = 172;
 const cardOffset = 30;
@@ -23,7 +24,8 @@ function renderTableau(
       img: getImage(pile[i]),
       revealed: pile[i].revealed,
       parent: anchorDiv,
-      depth: pile.length - i
+      depth: pile.length - i,
+      onclick: () => onClickCard(pileName)
     });
     c0.style.position = "absolute";
     c0.style.top = `${i * cardOffset + cardHeight / 2}px`;
@@ -47,15 +49,6 @@ function isAllowedOnTableau(pile: Card[], add: Card[]): boolean {
   return false;
 }
 
-function onClickTableau(pileName: Pile) {
-  const pile = game.piles[pileName];
-  if (pile.length !== 0) {
-    const lastCard = pile[pile.length - 1];
-    lastCard.revealed = true;
-    game.updateVisuals[pileName]();
-  }
-}
-
 export function CreateTableauSlot(pile: Pile) {
   const slot = createDnDSlot({ pile: pile, allowDrop: isAllowedOnTableau });
 
@@ -63,8 +56,6 @@ export function CreateTableauSlot(pile: Pile) {
   const anchorDiv = document.createElement("div");
   slot.appendChild(anchorDiv);
   anchorDiv.style.position = "relative";
-
-  slot.onclick = () => onClickTableau(pile);
 
   game.updateVisuals[pile] = () => renderTableau(pile, slot, anchorDiv);
 
