@@ -29,7 +29,7 @@ function doNothing() {}
 
 export function newGame(): Game {
   const deck = freshDeck();
-  return {
+  const out: Game = {
     backImage: BackImages.Blue,
     piles: {
       // Contains all unused cards.
@@ -75,6 +75,8 @@ export function newGame(): Game {
       [Pile.TABLEAU_6]: doNothing
     }
   };
+
+  return out;
 }
 
 // Transfer a card between 2 piles.

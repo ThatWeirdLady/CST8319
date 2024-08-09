@@ -1,13 +1,8 @@
 import "./style.css";
-import {
-  CreateGameDiv,
-  CreateHeaderLayout,
-  CreateLayout
-} from "./LayoutVisuals";
+import { CreatePageLayout, solitaireGreen } from "./LayoutVisuals";
 import { fullRender } from "./Solitaire";
 
-const gameLayout = CreateLayout(CreateGameDiv());
-CreateHeaderLayout(document.body);
-document.body.appendChild(gameLayout);
+document.body.appendChild(CreatePageLayout());
+document.body.style.backgroundColor = solitaireGreen;
 
 fullRender();

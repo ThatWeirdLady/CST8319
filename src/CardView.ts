@@ -22,6 +22,7 @@ interface CardParams {
   img: string;
   revealed: boolean;
   parent?: HTMLElement;
+  onclick?: () => void;
 }
 
 // Create a card that can be used as the start of a dragging event to move a card between 2 piles.
@@ -32,6 +33,7 @@ export function createCard(params: CardParams) {
   else img.src = params.img;
 
   // Add events
+  img.onclick = params.onclick;
   img.draggable = true;
   img.ondragstart = onDrag(params.pile, params.depth);
   img.ondragend = onDragEnd;

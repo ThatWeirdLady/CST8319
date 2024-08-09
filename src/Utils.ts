@@ -18,7 +18,11 @@ export function shuffle<T>(array: T[]) {
 }
 
 // render a pile where the only thing that matters is the card on top or nothing at all.
-export function renderSimplePile(div: HTMLDivElement, pileName: Pile) {
+export function renderSimplePile(
+  div: HTMLDivElement,
+  pileName: Pile,
+  onclick?: () => void
+) {
   div.innerHTML = "";
   const pile = game.piles[pileName];
   const topCard = pile[pile.length - 1];
@@ -28,7 +32,8 @@ export function renderSimplePile(div: HTMLDivElement, pileName: Pile) {
       revealed: topCard.revealed,
       img: getImage(topCard),
       parent: div,
-      depth: 1
+      depth: 1,
+      onclick: onclick
     });
   }
 }

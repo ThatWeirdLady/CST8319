@@ -81,7 +81,7 @@ The talon on click function combines both tableau and foundation
 
 # Score
 
-The game object needs to have a new field called `score` which starts at zero.
+The game object needs to have a new field called `score` which starts at zero. When clicking new game it should also reset.
 
 In the function transfer a bunch of new conditions need to be checked (at the end of the function)
 

@@ -5,7 +5,7 @@ import { fullRender, game, newGame } from "./Solitaire";
 import { CreateTableauSlot } from "./TableauSlot";
 import { CreateTalonSlot } from "./TalonSlot";
 
-const solitaireGreen = "#307022"; // taken from pictures off the internet
+export const solitaireGreen = "#307022"; // taken from pictures off the internet
 
 /*
 
@@ -28,9 +28,14 @@ const solitaireGreen = "#307022"; // taken from pictures off the internet
 
 */
 
-export function CreateHeaderLayout(doc: HTMLElement) {
-  doc.style.backgroundColor = solitaireGreen;
+export function CreatePageLayout() {
+  const page = document.createElement("div");
+  page.appendChild(CreateHeaderLayout());
+  page.appendChild(CreateGameLayout());
+  return page;
+}
 
+function CreateHeaderLayout() {
   const headerDiv = document.createElement("div");
   headerDiv.id = "headerDiv";
 
@@ -44,27 +49,18 @@ export function CreateHeaderLayout(doc: HTMLElement) {
   const button = document.createElement("button");
   button.id = "newGame";
 
-  button.addEventListener("click", () => {
-    console.log("In On Click");
+  button.onclick = () => {
     const nextGame = newGame();
     game.piles = nextGame.piles;
     fullRender();
-    console.log("After full render");
-  });
+  };
 
   button.textContent = "New Game";
   navBar.appendChild(score);
   navBar.appendChild(button);
 
   headerDiv.appendChild(navBar);
-  doc.appendChild(headerDiv);
-}
-
-export function CreateGameDiv() {
-  const gameDiv = document.createElement("div");
-  gameDiv.id = "gameDiv";
-  gameDiv.style.backgroundColor = solitaireGreen;
-  return gameDiv;
+  return headerDiv;
 }
 
 function CreateFoundationLayout() {
@@ -110,10 +106,11 @@ function CreateTableauLayout() {
   return container;
 }
 
-export function CreateLayout(container: HTMLElement) {
-  container.style.backgroundColor = solitaireGreen;
-  container.appendChild(CreateTopRowLayout());
-  container.appendChild(CreateTableauLayout());
-
-  return container;
+function CreateGameLayout() {
+  const gameDiv = document.createElement("div");
+  gameDiv.id = "gameDiv";
+  gameDiv.style.backgroundColor = solitaireGreen;
+  gameDiv.appendChild(CreateTopRowLayout());
+  gameDiv.appendChild(CreateTableauLayout());
+  return gameDiv;
 }
