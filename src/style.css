@@ -14,6 +14,21 @@
   height: 162px;
 }
 
+#headerDiv {
+  display: flex;
+  justify-content: center;
+  background-color: #307022;
+  width: 100%;
+}
+
+#navBar {
+  display: flex;
+  justify-content: space-between;
+  background-color: grey;
+  width: 100%;
+  height: 80px;
+}
+
 #topRowDiv {
   display: flex;
   justify-content: space-between;
@@ -32,4 +47,9 @@
 #tableauRow {
   display: flex;
   justify-content: space-evenly;
+}
+
+#gameDiv {
+  width: 100%;
+  height: 100%;
 }

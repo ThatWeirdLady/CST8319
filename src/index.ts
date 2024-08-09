@@ -1,4 +1,13 @@
 import "./style.css";
-import { CreateLayout } from "./LayoutVisuals";
+import {
+  CreateGameDiv,
+  CreateHeaderLayout,
+  CreateLayout
+} from "./LayoutVisuals";
+import { fullRender } from "./Solitaire";
 
-CreateLayout(document.body);
+const gameLayout = CreateLayout(CreateGameDiv());
+CreateHeaderLayout(document.body);
+document.body.appendChild(gameLayout);
+
+fullRender();

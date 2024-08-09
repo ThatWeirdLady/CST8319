@@ -27,7 +27,7 @@ function revealLast(pile: Card[]): Card[] {
 // declare this so we can use it as default use case for updateVisuals
 function doNothing() {}
 
-function newGame(): Game {
+export function newGame(): Game {
   const deck = freshDeck();
   return {
     backImage: BackImages.Blue,

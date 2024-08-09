@@ -1,7 +1,7 @@
 import { CreateDeckSlot } from "./DeckSlot";
 import { CreateFoundationSlot } from "./FoundationSlot";
 import { FoundationPiles, TableauPiles } from "./Pile";
-import { fullRender } from "./Solitaire";
+import { fullRender, game, newGame } from "./Solitaire";
 import { CreateTableauSlot } from "./TableauSlot";
 import { CreateTalonSlot } from "./TalonSlot";
 
@@ -27,6 +27,45 @@ const solitaireGreen = "#307022"; // taken from pictures off the internet
 +---------------------------------------------------------------------+
 
 */
+
+export function CreateHeaderLayout(doc: HTMLElement) {
+  doc.style.backgroundColor = solitaireGreen;
+
+  const headerDiv = document.createElement("div");
+  headerDiv.id = "headerDiv";
+
+  const navBar = document.createElement("div");
+  navBar.id = "navBar";
+
+  const score = document.createElement("p");
+  score.textContent = "Score: ";
+  score.style.color = "white";
+
+  const button = document.createElement("button");
+  button.id = "newGame";
+
+  button.addEventListener("click", () => {
+    console.log("In On Click");
+    const nextGame = newGame();
+    game.piles = nextGame.piles;
+    fullRender();
+    console.log("After full render");
+  });
+
+  button.textContent = "New Game";
+  navBar.appendChild(score);
+  navBar.appendChild(button);
+
+  headerDiv.appendChild(navBar);
+  doc.appendChild(headerDiv);
+}
+
+export function CreateGameDiv() {
+  const gameDiv = document.createElement("div");
+  gameDiv.id = "gameDiv";
+  gameDiv.style.backgroundColor = solitaireGreen;
+  return gameDiv;
+}
 
 function CreateFoundationLayout() {
   const container = document.createElement("div");
@@ -73,9 +112,8 @@ function CreateTableauLayout() {
 
 export function CreateLayout(container: HTMLElement) {
   container.style.backgroundColor = solitaireGreen;
-
   container.appendChild(CreateTopRowLayout());
   container.appendChild(CreateTableauLayout());
 
-  fullRender();
+  return container;
 }
