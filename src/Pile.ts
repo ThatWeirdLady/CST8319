@@ -36,3 +36,17 @@ export const TableauPiles = [
 export function isPile(p: unknown): p is Pile {
   return Object.values(Pile).some((v) => v === p);
 }
+
+export function isFoundationPile(pile: Pile): boolean {
+  for (const f of FoundationPiles) {
+    if (f === pile) return true;
+  }
+  return false;
+}
+
+export function isTableauPile(pile: Pile): boolean {
+  for (const t of TableauPiles) {
+    if (t === pile) return true;
+  }
+  return false;
+}

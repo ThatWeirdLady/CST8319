@@ -1,5 +1,5 @@
 import { shuffle } from "./Utils";
-import { Pile } from "./Pile";
+import { isFoundationPile, isTableauPile, Pile } from "./Pile";
 import { Rank } from "./Rank";
 import { Suit } from "./CardSuit";
 import { BackImages } from "./CardImages";
@@ -16,6 +16,7 @@ interface Game {
   piles: Record<Pile, Card[]>;
   updateVisuals: Record<Pile, () => void>;
   currentDrag?: DragData;
+  score: number;
 }
 
 // reveal the last card of a pile and return the pile, used for Tableau initialization.
@@ -30,6 +31,7 @@ function doNothing() {}
 export function newGame(): Game {
   const deck = freshDeck();
   const out: Game = {
+    score: 0,
     backImage: BackImages.Blue,
     piles: {
       // Contains all unused cards.
@@ -92,7 +94,18 @@ export function transfer(
     for (const card of cards) card.revealed = revealed;
   }
 
+  console.log("before if" + game.score);
+
+  if (isFoundationPile(dst) === true) game.score = game.score + 10;
+
+  if (src === Pile.TALON && isTableauPile(dst) === true) game.score += 5;
+
+  if (isTableauPile(src) && isTableauPile(dst)) game.score += 3 * amt;
+
+  if (isFoundationPile(src) && !isFoundationPile(dst)) game.score -= 15;
+
   game.piles[dst].push(...cards);
+  console.log(game.score);
 
   game.updateVisuals[src]();
   game.updateVisuals[dst]();
