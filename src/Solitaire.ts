@@ -17,6 +17,7 @@ interface Game {
   updateVisuals: Record<Pile, () => void>;
   currentDrag?: DragData;
   score: number;
+  updateScore: () => void;
 }
 
 // reveal the last card of a pile and return the pile, used for Tableau initialization.
@@ -32,6 +33,7 @@ export function newGame(): Game {
   const deck = freshDeck();
   const out: Game = {
     score: 0,
+    updateScore: doNothing,
     backImage: BackImages.Blue,
     piles: {
       // Contains all unused cards.
@@ -94,8 +96,6 @@ export function transfer(
     for (const card of cards) card.revealed = revealed;
   }
 
-  console.log("before if" + game.score);
-
   if (isFoundationPile(dst) === true) game.score = game.score + 10;
 
   if (src === Pile.TALON && isTableauPile(dst) === true) game.score += 5;
@@ -109,6 +109,7 @@ export function transfer(
 
   game.updateVisuals[src]();
   game.updateVisuals[dst]();
+  game.updateScore();
 }
 
 export function fullRender() {

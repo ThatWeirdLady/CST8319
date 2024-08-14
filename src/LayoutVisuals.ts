@@ -45,6 +45,7 @@ function CreateHeaderLayout() {
   const score = document.createElement("p");
   score.textContent = "Score: ";
   score.style.color = "white";
+  game.updateScore = () => updateScore(score);
 
   const button = document.createElement("button");
   button.id = "newGame";
@@ -113,4 +114,8 @@ function CreateGameLayout() {
   gameDiv.appendChild(CreateTopRowLayout());
   gameDiv.appendChild(CreateTableauLayout());
   return gameDiv;
+}
+
+function updateScore(score: HTMLElement) {
+  score.innerHTML = "Score: " + game.score;
 }
