@@ -31,7 +31,6 @@ export const solitaireGreen = "#307022"; // taken from pictures off the internet
 
 export function CreatePageLayout() {
   const page = document.createElement("div");
-
   page.appendChild(CreateHeaderLayout());
   const gameLayoutDiv = document.createElement("div");
   gameLayoutDiv.style.display = "flex";
