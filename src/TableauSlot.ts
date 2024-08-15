@@ -7,8 +7,9 @@ import { Rank } from "./Rank";
 import { isAlternating } from "./CardSuit";
 import { onClickCard } from "./autoClick";
 
-const cardHeight = 172;
-const cardOffset = 30;
+export const cardHeight = 172;
+export const cardWidth = 121;
+export const cardOffset = 30;
 
 function renderTableau(
   pileName: Pile,

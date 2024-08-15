@@ -1,7 +1,8 @@
 import { CreateDeckSlot } from "./DeckSlot";
 import { CreateFoundationSlot } from "./FoundationSlot";
+import { OpenNewGameModal } from "./Modal";
 import { FoundationPiles, TableauPiles } from "./Pile";
-import { fullRender, game, newGame } from "./Solitaire";
+import { game } from "./Solitaire";
 import { CreateTableauSlot } from "./TableauSlot";
 import { CreateTalonSlot } from "./TalonSlot";
 
@@ -30,8 +31,14 @@ export const solitaireGreen = "#307022"; // taken from pictures off the internet
 
 export function CreatePageLayout() {
   const page = document.createElement("div");
+
   page.appendChild(CreateHeaderLayout());
-  page.appendChild(CreateGameLayout());
+  const gameLayoutDiv = document.createElement("div");
+  gameLayoutDiv.style.display = "flex";
+  gameLayoutDiv.style.justifyContent = "center";
+  gameLayoutDiv.style.marginTop = "32px";
+  gameLayoutDiv.appendChild(CreateGameLayout());
+  page.appendChild(gameLayoutDiv);
   return page;
 }
 
@@ -43,20 +50,17 @@ function CreateHeaderLayout() {
   navBar.id = "navBar";
 
   const score = document.createElement("p");
-  score.textContent = "Score: ";
+  score.textContent = "Score: 0";
   score.style.color = "white";
+  score.style.fontSize = "32px";
   game.updateScore = () => updateScore(score);
 
   const button = document.createElement("button");
   button.id = "newGame";
-
-  button.onclick = () => {
-    const nextGame = newGame();
-    game.piles = nextGame.piles;
-    fullRender();
-  };
+  button.onclick = OpenNewGameModal;
 
   button.textContent = "New Game";
+  button.classList.add("btn");
   navBar.appendChild(score);
   navBar.appendChild(button);
 
