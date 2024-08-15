@@ -68,7 +68,7 @@ import Red2 from "./cards/backs/red2.svg";
 import { Card } from "./Solitaire";
 
 // Create an object with all card front images for easy access.
-const FrontImages: Record<string, string> = {
+export const FrontImages: Record<string, string> = {
   CLUB10,
   DIAMOND10,
   HEART10,

@@ -1,8 +1,9 @@
 import { shuffle } from "./Utils";
-import { Pile } from "./Pile";
+import { FoundationPiles, isFoundationPile, isTableauPile, Pile } from "./Pile";
 import { Rank } from "./Rank";
 import { Suit } from "./CardSuit";
 import { BackImages } from "./CardImages";
+import { TriggerWinAnimation } from "./WinAnimation";
 
 export const game = newGame();
 
@@ -16,6 +17,8 @@ interface Game {
   piles: Record<Pile, Card[]>;
   updateVisuals: Record<Pile, () => void>;
   currentDrag?: DragData;
+  score: number;
+  updateScore: () => void;
 }
 
 // reveal the last card of a pile and return the pile, used for Tableau initialization.
@@ -28,31 +31,11 @@ function revealLast(pile: Card[]): Card[] {
 function doNothing() {}
 
 export function newGame(): Game {
-  const deck = freshDeck();
   const out: Game = {
+    score: 0,
+    updateScore: doNothing,
     backImage: BackImages.Blue,
-    piles: {
-      // Contains all unused cards.
-      [Pile.DECK]: deck,
-
-      // Also known as the "waste" pile. Cards go here after being flipped from the deck pile.
-      [Pile.TALON]: [],
-
-      // The 4 piles where the Aces go first.
-      [Pile.FOUNDATION_0]: [],
-      [Pile.FOUNDATION_1]: [],
-      [Pile.FOUNDATION_2]: [],
-      [Pile.FOUNDATION_3]: [],
-
-      [Pile.TABLEAU_0]: revealLast(deck.splice(-1)),
-      [Pile.TABLEAU_1]: revealLast(deck.splice(-2)),
-      [Pile.TABLEAU_2]: revealLast(deck.splice(-3)),
-      [Pile.TABLEAU_3]: revealLast(deck.splice(-4)),
-      [Pile.TABLEAU_4]: revealLast(deck.splice(-5)),
-      [Pile.TABLEAU_5]: revealLast(deck.splice(-6)),
-      [Pile.TABLEAU_6]: revealLast(deck.splice(-7))
-    },
-
+    piles: KlondikePiles(),
     updateVisuals: {
       // Contains all unused cards.
       [Pile.DECK]: doNothing,
@@ -79,6 +62,76 @@ export function newGame(): Game {
   return out;
 }
 
+export function KlondikePiles(): Record<Pile, Card[]> {
+  const deck = freshDeck();
+  return {
+    // Contains all unused cards.
+    [Pile.DECK]: deck,
+
+    // Also known as the "waste" pile. Cards go here after being flipped from the deck pile.
+    [Pile.TALON]: [],
+
+    // The 4 piles where the Aces go first.
+    [Pile.FOUNDATION_0]: [],
+    [Pile.FOUNDATION_1]: [],
+    [Pile.FOUNDATION_2]: [],
+    [Pile.FOUNDATION_3]: [],
+
+    [Pile.TABLEAU_0]: revealLast(deck.splice(-1)),
+    [Pile.TABLEAU_1]: revealLast(deck.splice(-2)),
+    [Pile.TABLEAU_2]: revealLast(deck.splice(-3)),
+    [Pile.TABLEAU_3]: revealLast(deck.splice(-4)),
+    [Pile.TABLEAU_4]: revealLast(deck.splice(-5)),
+    [Pile.TABLEAU_5]: revealLast(deck.splice(-6)),
+    [Pile.TABLEAU_6]: revealLast(deck.splice(-7))
+  };
+}
+
+export function NearWinPiles(): Record<Pile, Card[]> {
+  const makeFoundation = (suit: Suit, n: number): Card[] => {
+    const ranksArray = Object.values(Rank);
+    const out: Card[] = [];
+    for (const rank of ranksArray) {
+      if (rank > n) break;
+      const Card = {
+        rank: rank,
+        suit: suit,
+        revealed: true
+      };
+      out.push(Card);
+    }
+    return out;
+  };
+
+  return {
+    // Contains all unused cards.
+    [Pile.DECK]: [],
+
+    // Also known as the "waste" pile. Cards go here after being flipped from the deck pile.
+    [Pile.TALON]: [],
+
+    // The 4 piles where the Aces go first.
+    [Pile.FOUNDATION_0]: makeFoundation(Suit.CLUB, 13),
+    [Pile.FOUNDATION_1]: makeFoundation(Suit.DIAMOND, 13),
+    [Pile.FOUNDATION_2]: makeFoundation(Suit.HEART, 13),
+    [Pile.FOUNDATION_3]: makeFoundation(Suit.DIAMOND, 12),
+
+    [Pile.TABLEAU_0]: [],
+    [Pile.TABLEAU_1]: [],
+    [Pile.TABLEAU_2]: [],
+    [Pile.TABLEAU_3]: [],
+    [Pile.TABLEAU_4]: [],
+    [Pile.TABLEAU_5]: [],
+    [Pile.TABLEAU_6]: [
+      {
+        suit: Suit.DIAMOND,
+        rank: Rank.King,
+        revealed: true
+      }
+    ]
+  };
+}
+
 // Transfer a card between 2 piles.
 export function transfer(
   src: Pile,
@@ -92,10 +145,23 @@ export function transfer(
     for (const card of cards) card.revealed = revealed;
   }
 
+  if (isFoundationPile(dst)) addScore(10);
+  if (src === Pile.TALON && isTableauPile(dst)) addScore(5);
+  if (isTableauPile(src) && isTableauPile(dst)) addScore(3 * amt);
+  if (isFoundationPile(src) && !isFoundationPile(dst)) addScore(-15);
+
   game.piles[dst].push(...cards);
 
   game.updateVisuals[src]();
   game.updateVisuals[dst]();
+
+  const hasWon = FoundationPiles.every((f) => game.piles[f].length === 13);
+  if (hasWon) TriggerWinAnimation();
+}
+
+export function addScore(score: number) {
+  game.score += score;
+  game.updateScore();
 }
 
 export function fullRender() {

@@ -1,0 +1,18 @@
+.backdrop {
+  background-color: rgba(0, 0, 0, 0.5);
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal {
+  background-color: white;
+  padding: 32px;
+  border-radius: 16px;
+  box-shadow: 4px 8px 8px hsl(0deg 0% 0% / 0.38);
+}
