@@ -19,6 +19,9 @@ interface Game {
   currentDrag?: DragData;
   score: number;
   updateScore: () => void;
+  timer: number;
+  updateTimer: () => void;
+  vegas: boolean;
 }
 
 // reveal the last card of a pile and return the pile, used for Tableau initialization.
@@ -36,6 +39,9 @@ export function newGame(): Game {
     updateScore: doNothing,
     backImage: BackImages.Blue,
     piles: KlondikePiles(),
+    vegas: false,
+    timer: 0,
+    updateTimer: doNothing,
     updateVisuals: {
       // Contains all unused cards.
       [Pile.DECK]: doNothing,
@@ -170,6 +176,8 @@ export function fullRender() {
   for (const update of updates) {
     update();
   }
+  game.updateTimer();
+  game.updateScore();
 }
 
 export interface Card {
@@ -199,3 +207,16 @@ function freshDeck() {
 
   return Deck;
 }
+
+function incrementTimer() {
+  game.timer++;
+  if (game.timer % 10 === 0) {
+    game.score = game.score - 2;
+    game.updateScore();
+  }
+}
+
+setInterval(() => {
+  incrementTimer();
+  game.updateTimer();
+}, 1000);
