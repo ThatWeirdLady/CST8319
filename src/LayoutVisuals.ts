@@ -54,6 +54,12 @@ function CreateHeaderLayout() {
   score.style.fontSize = "32px";
   game.updateScore = () => updateScore(score);
 
+  const timer = document.createElement("p");
+  timer.textContent = "0:00";
+  timer.style.color = "white";
+  timer.style.fontSize = "32px";
+  game.updateTimer = () => updateTimer(timer);
+
   const button = document.createElement("button");
   button.id = "newGame";
   button.onclick = OpenNewGameModal;
@@ -61,6 +67,7 @@ function CreateHeaderLayout() {
   button.textContent = "New Game";
   button.classList.add("btn");
   navBar.appendChild(score);
+  navBar.appendChild(timer);
   navBar.appendChild(button);
 
   headerDiv.appendChild(navBar);
@@ -121,4 +128,14 @@ function CreateGameLayout() {
 
 function updateScore(score: HTMLElement) {
   score.innerHTML = "Score: " + game.score;
+}
+
+function padWithZero(num: number): string {
+  if (num < 10) return "0" + num;
+  return num + "";
+}
+function updateTimer(timer: HTMLElement) {
+  const minutes = Math.floor(game.timer / 60);
+  const seconds = game.timer % 60;
+  timer.innerHTML = minutes + ":" + padWithZero(seconds);
 }

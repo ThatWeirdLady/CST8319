@@ -43,6 +43,7 @@ export function OpenNewGameModal() {
   regular.onclick = () => {
     game.piles = KlondikePiles();
     addScore(-game.score);
+    game.timer = 0;
     fullRender();
     onClose();
   };
