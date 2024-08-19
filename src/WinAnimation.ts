@@ -19,7 +19,15 @@ export function TriggerWinAnimation() {
 
     img.src = FrontImages[suit + rank];
     img.style.position = "absolute";
-    img.style.left = `${(Math.sin(ts / (400 + Math.random() * 100)) * width) / 2 + width / 2}px`;
+
+    const dx = ts / 1200;
+    let px = 0;
+    if (Math.floor(dx) % 2 === 0) {
+      px = 1 - (dx % 1);
+    } else {
+      px = dx % 1;
+    }
+    img.style.left = `${px * width}px`;
     img.style.top = `${height - Math.abs(Math.cos(ts / 300) * height)}px`;
 
     document.body.appendChild(img);
