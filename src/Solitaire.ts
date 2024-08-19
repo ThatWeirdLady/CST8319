@@ -4,8 +4,9 @@ import { Rank } from "./Rank";
 import { Suit } from "./CardSuit";
 import { BackImages } from "./CardImages";
 import { TriggerWinAnimation } from "./WinAnimation";
+import { drawType } from "./drawType";
 
-export const game = newGame();
+export const game = createGameObject();
 
 interface DragData {
   src: Pile;
@@ -22,6 +23,8 @@ interface Game {
   timer: number;
   updateTimer: () => void;
   vegas: boolean;
+  drawType: drawType;
+  deckPass: number;
 }
 
 // reveal the last card of a pile and return the pile, used for Tableau initialization.
@@ -32,8 +35,22 @@ function revealLast(pile: Card[]): Card[] {
 
 // declare this so we can use it as default use case for updateVisuals
 function doNothing() {}
+interface newGameOptions {
+  score?: number;
+  piles: Record<Pile, Card[]>;
+  vegas?: boolean;
+  drawType: drawType;
+}
+export function startNewGame(opt: newGameOptions): void {
+  game.score = opt.score ?? 0;
+  game.piles = opt.piles;
+  game.vegas = opt.vegas ?? false;
+  game.timer = 0;
+  game.deckPass = 1;
+  game.drawType = opt.drawType;
+}
 
-export function newGame(): Game {
+export function createGameObject(): Game {
   const out: Game = {
     score: 0,
     updateScore: doNothing,
@@ -42,6 +59,8 @@ export function newGame(): Game {
     vegas: false,
     timer: 0,
     updateTimer: doNothing,
+    drawType: drawType.drawOne,
+    deckPass: 1,
     updateVisuals: {
       // Contains all unused cards.
       [Pile.DECK]: doNothing,
@@ -151,10 +170,12 @@ export function transfer(
     for (const card of cards) card.revealed = revealed;
   }
 
-  if (isFoundationPile(dst)) addScore(10);
-  if (src === Pile.TALON && isTableauPile(dst)) addScore(5);
-  if (isTableauPile(src) && isTableauPile(dst)) addScore(3 * amt);
-  if (isFoundationPile(src) && !isFoundationPile(dst)) addScore(-15);
+  if (game.vegas === false) {
+    checkKlondikeScore(src, dst, amt);
+  }
+  if (game.vegas === true) {
+    checkVegasScore(src, dst);
+  }
 
   game.piles[dst].push(...cards);
 
@@ -210,7 +231,7 @@ function freshDeck() {
 
 function incrementTimer() {
   game.timer++;
-  if (game.timer % 10 === 0) {
+  if (game.timer % 10 === 0 && !game.vegas) {
     game.score = game.score - 2;
     game.updateScore();
   }
@@ -220,3 +241,15 @@ setInterval(() => {
   incrementTimer();
   game.updateTimer();
 }, 1000);
+
+function checkKlondikeScore(src: Pile, dst: Pile, amt: number) {
+  if (isFoundationPile(dst)) addScore(10);
+  if (src === Pile.TALON && isTableauPile(dst)) addScore(5);
+  if (isTableauPile(src) && isTableauPile(dst)) addScore(3 * amt);
+  if (isFoundationPile(src) && !isFoundationPile(dst)) addScore(-15);
+}
+
+function checkVegasScore(src: Pile, dst: Pile) {
+  if (isFoundationPile(dst)) addScore(5);
+  if (isFoundationPile(src) && !isFoundationPile(dst)) addScore(-5);
+}

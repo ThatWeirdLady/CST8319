@@ -1,10 +1,10 @@
+import { drawType } from "./drawType";
 import "./Modal.css";
 import {
-  addScore,
   fullRender,
-  game,
   KlondikePiles,
-  NearWinPiles
+  NearWinPiles,
+  startNewGame
 } from "./Solitaire";
 
 export function OpenNewGameModal() {
@@ -40,10 +40,46 @@ export function OpenNewGameModal() {
   regular.innerText = "Klondike";
   regular.classList.add("btn");
 
+  const drawOne = document.createElement("input");
+  drawOne.type = "radio";
+  drawOne.name = "drawType";
+  drawOne.id = drawType.drawOne;
+  drawOne.checked = true;
+
+  const drawOneLabel = document.createElement("label");
+
+  drawOneLabel.setAttribute("for", drawType.drawOne);
+  drawOneLabel.innerHTML = `<p style="font-size: 24px; margin-right: 32px">Draw One</p>`;
+  const drawThreeLabel = document.createElement("label");
+  drawThreeLabel.setAttribute("for", drawType.drawThree);
+  drawThreeLabel.innerHTML = `<p style="font-size: 24px">Draw Three</p>`;
+
+  const drawThree = document.createElement("input");
+  drawThree.type = "radio";
+  drawThree.name = "drawType";
+  drawThree.id = drawType.drawThree;
+
+  const drawBox = document.createElement("div");
+  drawBox.style.display = "flex";
+  drawBox.style.justifyContent = "center";
+
+  drawBox.appendChild(drawOne);
+  drawBox.appendChild(drawOneLabel);
+  drawBox.appendChild(drawThree);
+  drawBox.appendChild(drawThreeLabel);
+  modal.appendChild(drawBox);
+  modal.appendChild(document.createElement("br"));
+
+  function whichDrawType() {
+    if (drawOne.checked) return drawType.drawOne;
+    else return drawType.drawThree;
+  }
+
   regular.onclick = () => {
-    game.piles = KlondikePiles();
-    addScore(-game.score);
-    game.timer = 0;
+    startNewGame({
+      drawType: whichDrawType(),
+      piles: KlondikePiles()
+    });
     fullRender();
     onClose();
   };
@@ -52,14 +88,26 @@ export function OpenNewGameModal() {
   const vegas = document.createElement("button");
   vegas.innerText = "Vegas";
   vegas.classList.add("btn");
+  vegas.onclick = () => {
+    startNewGame({
+      drawType: whichDrawType(),
+      piles: KlondikePiles(),
+      vegas: true,
+      score: -52
+    });
+    fullRender();
+    onClose();
+  };
   modal.appendChild(vegas);
 
   const nearWin = document.createElement("button");
   nearWin.innerText = "Near win";
   nearWin.classList.add("btn");
   nearWin.onclick = () => {
-    game.piles = NearWinPiles();
-    addScore(-game.score);
+    startNewGame({
+      piles: NearWinPiles(),
+      drawType: whichDrawType()
+    });
     fullRender();
     onClose();
   };

@@ -127,7 +127,9 @@ function CreateGameLayout() {
 }
 
 function updateScore(score: HTMLElement) {
-  score.innerHTML = "Score: " + game.score;
+  if (game.vegas === true) {
+    score.innerHTML = "$: " + game.score;
+  } else score.innerHTML = "Score: " + game.score;
 }
 
 function padWithZero(num: number): string {
