@@ -2,7 +2,7 @@ import { CreateDeckSlot } from "./DeckSlot";
 import { CreateFoundationSlot } from "./FoundationSlot";
 import { OpenNewGameModal } from "./Modal";
 import { FoundationPiles, TableauPiles } from "./Pile";
-import { game } from "./Solitaire";
+import { autoSolveClick, game } from "./Solitaire";
 import { CreateTableauSlot } from "./TableauSlot";
 import { CreateTalonSlot } from "./TalonSlot";
 
@@ -90,8 +90,16 @@ function CreateDeckLayout() {
   const container = document.createElement("div");
   container.id = "deckDiv";
 
+  const autoSolve = document.createElement("button");
+  autoSolve.id = "autoSolve";
+  autoSolve.classList.add("btn");
+  autoSolve.textContent = "Solve";
+  autoSolve.style.visibility = "hidden";
+  autoSolve.onclick = autoSolveClick;
+
   container.appendChild(CreateDeckSlot());
   container.appendChild(CreateTalonSlot());
+  container.appendChild(autoSolve);
 
   return container;
 }
