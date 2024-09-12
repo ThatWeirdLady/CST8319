@@ -62,7 +62,7 @@ export function createGameObject(): Game {
     score: 0,
     updateScore: doNothing,
     backImage: BackImages.Blue,
-    piles: NearWinPiles(), //KlondikePiles(),
+    piles: KlondikePiles(),
     vegas: false,
     timer: 0,
     updateTimer: doNothing,
