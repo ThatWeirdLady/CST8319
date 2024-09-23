@@ -13,7 +13,6 @@ import { TriggerWinAnimation } from "./WinAnimation";
 import { drawType } from "./drawType";
 import { autoTransferToFoundation } from "./autoClick";
 
-
 export const game = createGameObject();
 
 interface DragData {
@@ -273,7 +272,6 @@ function checkVegasScore(src: Pile, dst: Pile) {
   if (isFoundationPile(src) && !isFoundationPile(dst)) addScore(-5);
 }
 
-
 function checkTalonForSolve(): boolean {
   const isReady = TableauPiles.every((pile) =>
     game.piles[pile].every((card) => card.revealed)
@@ -291,4 +289,3 @@ export function autoSolveClick() {
     }
   }, 100);
 }
-
