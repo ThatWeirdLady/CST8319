@@ -1,10 +1,17 @@
 import { shuffle } from "./Utils";
-import { FoundationPiles, isFoundationPile, isTableauPile, Pile } from "./Pile";
+import {
+  FoundationPiles,
+  isFoundationPile,
+  isTableauPile,
+  Pile,
+  TableauPiles
+} from "./Pile";
 import { Rank } from "./Rank";
 import { Suit } from "./CardSuit";
 import { BackImages } from "./CardImages";
 import { TriggerWinAnimation } from "./WinAnimation";
 import { drawType } from "./drawType";
+import { autoTransferToFoundation } from "./autoClick";
 
 export const game = createGameObject();
 
@@ -128,6 +135,19 @@ export function NearWinPiles(): Record<Pile, Card[]> {
     return out;
   };
 
+  const makeTableau = (suit: Suit, n: number): Card[] => {
+    const out: Card[] = [];
+    for (let i = 13; i > n; i--) {
+      const Card = {
+        rank: i,
+        suit: suit,
+        revealed: true
+      };
+      out.push(Card);
+    }
+    return out;
+  };
+
   return {
     // Contains all unused cards.
     [Pile.DECK]: [],
@@ -136,24 +156,18 @@ export function NearWinPiles(): Record<Pile, Card[]> {
     [Pile.TALON]: [],
 
     // The 4 piles where the Aces go first.
-    [Pile.FOUNDATION_0]: makeFoundation(Suit.CLUB, 13),
-    [Pile.FOUNDATION_1]: makeFoundation(Suit.DIAMOND, 13),
-    [Pile.FOUNDATION_2]: makeFoundation(Suit.HEART, 13),
-    [Pile.FOUNDATION_3]: makeFoundation(Suit.DIAMOND, 12),
+    [Pile.FOUNDATION_0]: makeFoundation(Suit.CLUB, 2),
+    [Pile.FOUNDATION_1]: makeFoundation(Suit.DIAMOND, 2),
+    [Pile.FOUNDATION_2]: makeFoundation(Suit.HEART, 2),
+    [Pile.FOUNDATION_3]: makeFoundation(Suit.SPADE, 2),
 
     [Pile.TABLEAU_0]: [],
     [Pile.TABLEAU_1]: [],
     [Pile.TABLEAU_2]: [],
-    [Pile.TABLEAU_3]: [],
-    [Pile.TABLEAU_4]: [],
-    [Pile.TABLEAU_5]: [],
-    [Pile.TABLEAU_6]: [
-      {
-        suit: Suit.DIAMOND,
-        rank: Rank.King,
-        revealed: true
-      }
-    ]
+    [Pile.TABLEAU_3]: makeTableau(Suit.CLUB, 2),
+    [Pile.TABLEAU_4]: makeTableau(Suit.DIAMOND, 2),
+    [Pile.TABLEAU_5]: makeTableau(Suit.HEART, 2),
+    [Pile.TABLEAU_6]: makeTableau(Suit.SPADE, 2)
   };
 }
 
@@ -181,6 +195,10 @@ export function transfer(
 
   game.updateVisuals[src]();
   game.updateVisuals[dst]();
+
+  if (game.piles.DECK.length === 0 && game.piles.TALON.length === 0) {
+    checkTalonForSolve();
+  }
 
   const hasWon = FoundationPiles.every((f) => game.piles[f].length === 13);
   if (hasWon) TriggerWinAnimation();
@@ -252,4 +270,22 @@ function checkKlondikeScore(src: Pile, dst: Pile, amt: number) {
 function checkVegasScore(src: Pile, dst: Pile) {
   if (isFoundationPile(dst)) addScore(5);
   if (isFoundationPile(src) && !isFoundationPile(dst)) addScore(-5);
+}
+
+function checkTalonForSolve(): boolean {
+  const isReady = TableauPiles.every((pile) =>
+    game.piles[pile].every((card) => card.revealed)
+  );
+  const autoSolve = document.getElementById("autoSolve");
+  autoSolve.style.visibility = "visible";
+  return isReady;
+}
+
+export function autoSolveClick() {
+  const id = setInterval(() => {
+    TableauPiles.forEach(autoTransferToFoundation);
+    if (TableauPiles.every((p) => game.piles[p].length === 0)) {
+      clearInterval(id);
+    }
+  }, 100);
 }

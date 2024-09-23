@@ -9,13 +9,14 @@ export function onClickCard(pileName: Pile): boolean {
 }
 
 function autoTransferToTableau(pileName: Pile): boolean {
-  const talon = game.piles[pileName];
-  const talonLastCard = talon[talon.length - 1];
+  const pile = game.piles[pileName];
+  const pileLastCard = pile[pile.length - 1];
+  if (!pileLastCard) return false;
 
   for (const tabl of TableauPiles) {
     const tableau = game.piles[tabl];
     if (!tableau.length) {
-      if (talonLastCard.rank === Rank.King) {
+      if (pileLastCard.rank === Rank.King) {
         transfer(pileName, tabl, 1, true);
         return true;
       }
@@ -24,8 +25,8 @@ function autoTransferToTableau(pileName: Pile): boolean {
 
     const tablLastCard = tableau[tableau.length - 1];
     if (
-      talonLastCard.rank === tablLastCard.rank - 1 &&
-      isAlternating(talonLastCard.suit, tablLastCard.suit)
+      pileLastCard.rank === tablLastCard.rank - 1 &&
+      isAlternating(pileLastCard.suit, tablLastCard.suit)
     ) {
       transfer(pileName, tabl, 1, true);
       return true;
@@ -35,7 +36,7 @@ function autoTransferToTableau(pileName: Pile): boolean {
   return false;
 }
 
-function autoTransferToFoundation(pileName: Pile): boolean {
+export function autoTransferToFoundation(pileName: Pile): boolean {
   const pile = game.piles[pileName];
   if (pile.length === 0) return false;
 
